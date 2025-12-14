@@ -31,15 +31,15 @@ class MapTest {
 
     @Test
     void testInit() {
-        _m0.init(_map_3_3);
-        _m1.init(_map_3_3);
-        assertEquals(_m0, _m1);
+        _m0 = new Map(_map_3_3);
+        _m1 = new Map(_map_3_3);
+        assertEquals(_m0,_m1);
     }
     @Test
     void testEquals() {
         assertEquals(_m0,_m1);
-        _m0.init(_map_3_3);
-        _m1.init(_map_3_3);
-        assertEquals(_m0,_m1);
+        _m0 = new Map(_map_3_3);
+        _m1 = new Map(_map_3_3);
+        assertTrue(_m0.equals(_m1));
     }
 }

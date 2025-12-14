@@ -161,8 +161,8 @@ public class Map implements Map2D, Serializable{
         int y = p.getY();
         if (x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight()) {
             ans = false;
-            return ans;
         }
+        return ans;
     }
     /**
      * This method returns true if and only if this Map has the same dimensions as p.
@@ -221,10 +221,34 @@ public class Map implements Map2D, Serializable{
 
     }
 
+    /**
+     * check if this map is equal to another map.
+     * @param ob the reference object with which to compare.
+     * @return true if the maps are equal (same dimensions and same values in all entries).
+     */
     @Override
     public boolean equals(Object ob) {
-        boolean ans = false;
-
+        boolean ans = true;
+        if(!(ob instanceof Map2D)) {
+            return false;
+        }
+        Map2D p = (Map2D) ob;
+        if(!this.sameDimensions(p)) {
+            ans = false;
+        }
+        else {
+            for (int i = 0; i < this.getWidth(); i++) {
+                for (int j = 0; j < this.getHeight(); j++) {
+                    if (this.getPixel(i, j) != p.getPixel(i, j)) {
+                        ans = false;
+                        break;
+                    }
+                }
+                if (!ans) {
+                    break;
+                }
+            }
+        }
         return ans;
     }
 	@Override
