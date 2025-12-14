@@ -221,8 +221,10 @@ public class Map implements Map2D, Serializable{
         int width = (int)(this.getWidth() * sx);
         int height = (int)(this.getHeight() * sy);
         Map p = new Map(width, height, 0);
-        for (int i = 0; i < this.getWidth(); i++) {
-            for( int j = 0; j < this.getHeight(); j++) {
+        int w = Math.min(p.getWidth(),this.getWidth());
+        int h = Math.min(p.getHeight(),this.getHeight());
+        for (int i = 0; i < w; i++) {
+            for( int j = 0; j < h; j++) {
                 int val = this.getPixel(i, j);
                 p.setPixel(i, j, val);
             }
