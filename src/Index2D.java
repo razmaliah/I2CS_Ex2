@@ -21,11 +21,19 @@ public class Index2D implements Pixel2D {
         this._y = other.getY();
     }
 
+    /**
+     *
+     * @return the X coordinate of this pixel.
+     */
     @Override
     public int getX() {
         return this._x;
     }
 
+    /**
+     *
+     * @return the Y coordinate of this pixel.
+     */
     @Override
     public int getY() {
         return this._y;
@@ -44,8 +52,7 @@ public class Index2D implements Pixel2D {
     }
 
     /**
-     * String represent this coordinate "(x,y)".
-     * @return - string represent this coordinate
+     * @return - string represent this coordinate "(x,y)".
      */
     @Override
     public String toString() {
