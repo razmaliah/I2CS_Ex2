@@ -196,19 +196,60 @@ public class Map implements Map2D, Serializable{
 
     }
 
+    /**
+     * This method multiplies all the entries in this map by the given scalar.
+     * @param scalar
+     */
     @Override
     public void mul(double scalar) {
-
+        for( int i = 0; i < this.getWidth(); i++) {
+            for (int j = 0; j < this.getHeight(); j++) {
+                int val = (int)(this.getPixel(i, j) * scalar);
+                this.setPixel(i, j, val);
+            }
+        }
     }
 
+    /**
+     * Rescale the dimensions of this map, a map of size [100][200]
+     * rescaled with (1.2,0.5) will change to [120][100].
+     * @param sx rescale factor for width
+     * @param sy rescale factor for height
+     */
     @Override
     public void rescale(double sx, double sy) {
-
+        int width = (int)(this.getWidth() * sx);
+        int height = (int)(this.getHeight() * sy);
+        Map p = new Map(width, height, 0);
+        for (int i = 0; i < this.getWidth(); i++) {
+            for( int j = 0; j < this.getHeight(); j++) {
+                int val = this.getPixel(i, j);
+                p.setPixel(i, j, val);
+            }
+        }
+        this._map = p.getMap();
     }
 
+    /**
+     * Draw a circle on this map.
+     * @param center - the center of the circle "(x,y)".
+     * @param rad - the radius of the circle.
+     * @param color - the (new) color to be used in the drawing.
+     */
     @Override
     public void drawCircle(Pixel2D center, double rad, int color) {
-
+        int startW = Math.max(0, (int)(center.getX() - rad));
+        int endW = Math.min(this.getWidth() - 1, (int)(center.getX()+rad+1));
+        int startH = Math.max(0, (int)(center.getY() - rad));
+        int endH = Math.min(this.getHeight() - 1, (int)(center.getY()+rad+1));
+        for (int i = startW; i <= endW; i++) {
+            for (int j = startH; j <= endH; j++) {
+                Pixel2D p = new Index2D(i, j);
+                if (center.distance2D(p) < rad) {
+                    this.setPixel(i, j, color);
+                }
+            }
+        }
     }
 
     @Override
