@@ -133,6 +133,9 @@ class MapTest {
     void testDrawCircle() {
         _m0 = new Map(11,11,0);
         Pixel2D center = new Index2D(5,5);
+        Pixel2D center2 = new Index2D(100,5);
+        _m0.drawCircle(center,-1,4);
+        _m0.drawCircle(center2,3,11);
         _m0.drawCircle(center,3,1);
         boolean ans = true;
         for(int i=0;i<11;i++){

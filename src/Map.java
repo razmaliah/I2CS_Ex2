@@ -240,23 +240,33 @@ public class Map implements Map2D, Serializable{
      */
     @Override
     public void drawCircle(Pixel2D center, double rad, int color) {
-        int startW = Math.max(0, (int)(center.getX() - rad));
-        int endW = Math.min(this.getWidth() - 1, (int)(center.getX()+rad+1));
-        int startH = Math.max(0, (int)(center.getY() - rad));
-        int endH = Math.min(this.getHeight() - 1, (int)(center.getY()+rad+1));
-        for (int i = startW; i <= endW; i++) {
-            for (int j = startH; j <= endH; j++) {
-                Pixel2D p = new Index2D(i, j);
-                if (center.distance2D(p) < rad) {
-                    this.setPixel(i, j, color);
+        if (rad >= 0 || isInside(center)) {
+            int startW = Math.max(0, (int) (center.getX() - rad));
+            int endW = Math.min(this.getWidth() - 1, (int) (center.getX() + rad + 1));
+            int startH = Math.max(0, (int) (center.getY() - rad));
+            int endH = Math.min(this.getHeight() - 1, (int) (center.getY() + rad + 1));
+            for (int i = startW; i <= endW; i++) {
+                for (int j = startH; j <= endH; j++) {
+                    Pixel2D p = new Index2D(i, j);
+                    if (center.distance2D(p) < rad) {
+                        this.setPixel(i, j, color);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Draw a line on this map.
+     * @param p1 start point of the line "(x,y)".
+     * @param p2 end point of the line "(x,y)".
+     * @param color - the (new) color to be used in the drawing.
+     */
     @Override
     public void drawLine(Pixel2D p1, Pixel2D p2, int color) {
+        if(isInside(p1)&&isInside(p2)){
 
+        }
     }
 
     @Override
