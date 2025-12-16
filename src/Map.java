@@ -354,8 +354,54 @@ public class Map implements Map2D, Serializable{
 	 * https://en.wikipedia.org/wiki/Flood_fill
 	 */
 	public int fill(Pixel2D xy, int new_v,  boolean cyclic) {
-		int ans = -1;
-
+		int ans = 0;
+        if(xy == null || !isInside(xy)){return ans;}
+        int old_v = this.getPixel(xy);
+        if(old_v == new_v){return ans;}
+        Pixel2D up = new Index2D(xy.getX(), xy.getY()-1);
+        Pixel2D down = new Index2D(xy.getX(), xy.getY()+1);
+        Pixel2D left = new Index2D(xy.getX()-1, xy.getY());
+        Pixel2D right = new Index2D(xy.getX()+1, xy.getY());
+        this.setPixel(xy, new_v);
+        ans++;
+        if(isInside(up) && this.getPixel(up) == old_v){
+            ans += fill(up, new_v, cyclic);
+        }
+        if(isInside(down) && this.getPixel(down) == old_v){
+            ans += fill(down, new_v, cyclic);
+        }
+        if(isInside(left) && this.getPixel(left) == old_v){
+            ans += fill(left, new_v, cyclic);
+        }
+        if(isInside(right) && this.getPixel(right) == old_v){
+            ans += fill(right, new_v, cyclic);
+        }
+        if(cyclic){
+            if(xy.getX() == 0){
+                Pixel2D cLeft = new Index2D(this.getWidth()-1, xy.getY());
+                if(this.getPixel(cLeft) == old_v){
+                    ans += fill(cLeft, new_v, cyclic);
+                }
+            }
+            if(xy.getX() == this.getWidth()-1){
+                Pixel2D cRight = new Index2D(0, xy.getY());
+                if(this.getPixel(cRight) == old_v){
+                    ans += fill(cRight, new_v, cyclic);
+                }
+            }
+            if(xy.getY() == 0){
+                Pixel2D cUp = new Index2D(xy.getX(), this.getHeight()-1);
+                if(this.getPixel(cUp) == old_v){
+                    ans += fill(cUp, new_v, cyclic);
+                }
+            }
+            if(xy.getY() == this.getHeight()-1){
+                Pixel2D cDown = new Index2D(xy.getX(), 0);
+                if(this.getPixel(cDown) == old_v){
+                    ans += fill(cDown, new_v, cyclic);
+                }
+            }
+        }
 		return ans;
 	}
 

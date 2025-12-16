@@ -210,7 +210,25 @@ class MapTest {
                     ans = false;
                 }
             }
+            System.out.println(Arrays.toString(_m0.getMap()[w]));
         }
         assertTrue(ans);
+    }
+    @Test
+    void testFill() {
+        _m0 = new Map(5);
+        Pixel2D p = new Index2D(2,2);
+        int res = _m0.fill(p,1,true);
+        boolean ans = true;
+        for(int i=0;i<5;i++){
+            for(int j=0;j<5;j++){
+                if (_m0.getPixel(i,j) !=1){
+                    ans = false;
+                }
+            }
+        }
+        assertTrue(ans);
+        assertEquals(25, res);
+
     }
 }
