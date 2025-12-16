@@ -285,7 +285,7 @@ public class Map implements Map2D, Serializable{
                 int dx = right.getX() - left.getX(); // dx >=0
                 int dy = right.getY() - left.getY();
                 int steps = Math.max(Math.abs(dx), Math.abs(dy));
-                double xInc = (double) dx / (double) steps;
+                double xInc = (double) dx / (double) steps; // increment in x for each step
                 double a = (double) dy/(double) dx; // represent a from y = ax + b
                 double b = left.getY() - a * left.getX(); // represent b from y = ax + b
                 for (int i = 0; i <= steps; i++) {
@@ -297,9 +297,25 @@ public class Map implements Map2D, Serializable{
         }
     }
 
+    /**
+     * Draw a rectangle on this map with corners p1 and p2.
+     * @param p1 the first corner of the rectangle "(x,y)".
+     * @param p2 the second corner of the rectangle "(x,y)".
+     * @param color - the (new) color to be used in the drawing.
+     */
     @Override
     public void drawRect(Pixel2D p1, Pixel2D p2, int color) {
-
+        if(isInside(p1)&&isInside(p2)){
+            int startX = Math.min(p1.getX(), p2.getX());
+            int endX = Math.max(p1.getX(), p2.getX());
+            int startY = Math.min(p1.getY(), p2.getY());
+            int endY = Math.max(p1.getY(), p2.getY());
+            for (int i = startX; i <= endX; i++) {
+                for (int j = startY; j <= endY; j++) {
+                    this.setPixel(i, j, color);
+                }
+            }
+        }
     }
 
     /**

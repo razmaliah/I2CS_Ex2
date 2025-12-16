@@ -193,4 +193,24 @@ class MapTest {
             System.out.println(Arrays.toString(_m0.getMap()[i]));
         }
     }
+    @Test
+    void testDrawRect() {
+        _m0 = new Map(10);
+        Pixel2D topLeft = new Index2D(2,2);
+        Pixel2D bottomRight = new Index2D(7,5);
+        _m0.drawRect(topLeft,bottomRight,1);
+        boolean ans = true;
+        for(int w=0;w<10;w++){
+            for(int h=0;h<10;h++){
+                Pixel2D p = new Index2D(w,h);
+                if ((w>=2 && w<=7) && (h>=2 && h<=5) && _m0.getPixel(p) !=1){
+                    ans = false;
+                }
+                if ((w<2 || w>7 || h<2 || h>5) && _m0.getPixel(p) !=0){
+                    ans = false;
+                }
+            }
+        }
+        assertTrue(ans);
+    }
 }
