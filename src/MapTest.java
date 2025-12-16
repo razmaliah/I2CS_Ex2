@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import java.util.Arrays;
+
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 /**
@@ -121,13 +123,22 @@ class MapTest {
 
     @Test
     void testRescale() {
-        _m0 = new Map(10); // {{0,1,0}, {1,0,1}, {0,1,0}}
-        _m0.rescale(1.5, 0.5);
-        assertEquals(15, _m0.getWidth());
-        assertEquals(5, _m0.getHeight());
-        _m0.rescale(1.5, 1.5);
-        assertEquals(22, _m0.getWidth());
-        assertEquals(7, _m0.getHeight());
+        _m0 = new Map(10);
+        for (int i=0;i<10;i++){
+            for(int j=0;j<10;j++){
+                _m0.setPixel(i,j,i);
+            }
+            System.out.println(Arrays.toString(_m0.getMap()[i]));
+        }
+
+        _m0.rescale(2,1.5);
+        assertEquals(15, _m0.getHeight());
+        for(int i=0;i<20;i++){
+            for(int j=0;j<15;j++){
+                assertEquals(i/2, _m0.getPixel(i,j));
+            }
+            System.out.println(Arrays.toString(_m0.getMap()[i]));
+        }
     }
     @Test
     void testDrawCircle() {
