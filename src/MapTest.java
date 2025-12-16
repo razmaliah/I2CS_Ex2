@@ -162,5 +162,35 @@ class MapTest {
         }
         assertTrue(ans);
     }
-
+    @Test
+    void testDrawLine() {
+        _m0 = new Map(11);
+        Pixel2D p1 = new Index2D(0,0);
+        Pixel2D p2 = new Index2D(10,10);
+        _m0.drawLine(p1,p2,1);
+        boolean ans = true;
+        for(int i=0;i<11;i++){
+            for(int j=0;j<11;j++){
+                Pixel2D p = new Index2D(i,j);
+                if (i==j && _m0.getPixel(p) !=1){
+                    ans = false;
+                }
+                if (i!=j && _m0.getPixel(p) !=0){
+                    ans = false;
+                }
+            }
+        }
+        assertTrue(ans);
+    }
+    @Test
+    void testDrawLine2(){
+        _m0 = new Map(10);
+        Pixel2D p1 = new Index2D(1,5);
+        Pixel2D p2 = new Index2D(7,3);
+        _m0.drawLine(p1,p2,1);
+        boolean ans = true;
+        for(int i=0;i<10;i++) {
+            System.out.println(Arrays.toString(_m0.getMap()[i]));
+        }
+    }
 }

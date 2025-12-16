@@ -134,6 +134,10 @@ public class Map implements Map2D, Serializable{
      */
 	@Override
 	public void setPixel(int x, int y, int v) {
+        Pixel2D p = new Index2D(x, y);
+        if(!isInside(p)){
+            throw new RuntimeException("Coordinate out of bounds");
+        }
         this._map[x][y] = v;
     }
 
@@ -267,7 +271,29 @@ public class Map implements Map2D, Serializable{
     @Override
     public void drawLine(Pixel2D p1, Pixel2D p2, int color) {
         if(isInside(p1)&&isInside(p2)){
-
+            if(p1.equals(p2)){this.setPixel(p1,color);}
+            else{
+                Pixel2D left, right;
+                if (p1.getX() < p2.getX()){
+                    left = (Index2D) p1;
+                    right = (Index2D) p2;
+                }
+                else{
+                    left = (Index2D) p2;
+                    right = (Index2D) p1;
+                }
+                int dx = right.getX() - left.getX(); // dx >=0
+                int dy = right.getY() - left.getY();
+                int steps = Math.max(Math.abs(dx), Math.abs(dy));
+                double xInc = (double) dx / (double) steps;
+                double a = (double) dy/(double) dx; // represent a from y = ax + b
+                double b = left.getY() - a * left.getX(); // represent b from y = ax + b
+                for (int i = 0; i <= steps; i++) {
+                    int newX = (int) (left.getX() + xInc * i);
+                    int newY = (int) (a * newX + b);
+                    this.setPixel(newX,newY,color);
+                }
+            }
         }
     }
 
