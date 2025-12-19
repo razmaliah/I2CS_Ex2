@@ -1,5 +1,9 @@
 
+import org.junit.jupiter.api.Test;
+
 import java.io.Serializable;
+import java.util.Arrays;
+
 /**
  * This class represents a 2D map (int[w][h]) as a "screen" or a raster matrix or maze over integers.
  * This is the main class needed to be implemented.
@@ -161,6 +165,7 @@ public class Map implements Map2D, Serializable{
     @Override
     public boolean isInside(Pixel2D p) {
         boolean ans = true;
+        if (p == null) {return false;}
         int x = p.getX();
         int y = p.getY();
         if (x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight()) {
@@ -410,9 +415,21 @@ public class Map implements Map2D, Serializable{
 	 * BFS like shortest the computation based on iterative raster implementation of BFS, see:
 	 * https://en.wikipedia.org/wiki/Breadth-first_search
 	 */
-	public Pixel2D[] shortestPath(Pixel2D p1, Pixel2D p2, int obsColor, boolean cyclic) {
+	public Pixel2D[] shortestPath(Pixel2D start, Pixel2D target, int obsColor, boolean cyclic) {
 		Pixel2D[] ans = null;  // the result.
-
+        Map tempMap = new Map(this.getMap());
+        int validColor = tempMap.resetMap(obsColor);
+        tempMap.setPixel(start, 0);
+        tempMap.printMap();
+        tempMap.markSteps(start, target, cyclic, validColor, obsColor);
+        tempMap.printMap();
+        int howManySteps = tempMap.getPixel(target);
+        ans = new Pixel2D[howManySteps+1];
+        Pixel2D curr = target;
+        for(int i=howManySteps; i>=0; i--){
+            ans[i] = curr;
+            curr = tempMap.goBack(curr, cyclic);
+        }
 		return ans;
 	}
     @Override
@@ -422,5 +439,154 @@ public class Map implements Map2D, Serializable{
         return ans;
     }
 	////////////////////// Private Methods ///////////////////////
+    private int resetMap(int obstColor){
+        int validColor = -1;
+        if(obstColor == validColor){
+            validColor = -2;
+        }
+        for(int i=0;i<this.getWidth();i++){
+            for(int j=0;j<this.getHeight();j++){
+                if(this.getPixel(i,j) != obstColor){
+                    this.setPixel(i,j,validColor);
+                }
+            }
+        }
+        return validColor;
+    }
+    private int markNieghbors(Pixel2D start, int nieghborColor, boolean cyclic){
+        int howManyMarked =0;
+        Pixel2D up = new Index2D(start.getX(), start.getY()-1);
+        Pixel2D down = new Index2D(start.getX(), start.getY()+1);
+        Pixel2D left = new Index2D(start.getX()-1, start.getY());
+        Pixel2D right = new Index2D(start.getX()+1, start.getY());
+        if(cyclic && up.getY()<0){
+            up = new Index2D(start.getX(), this.getHeight()-1);
+        }
+        if(cyclic && down.getY()>=this.getHeight()) {
+            down = new Index2D(start.getX(), 0);
+        }
+        if(cyclic && left.getX()<0){
+            left = new Index2D(this.getWidth()-1, start.getY());
+        }
+        if(cyclic && right.getX()>=this.getWidth()){
+            right = new Index2D(0, start.getY());
+        }
+        int myValue = this.getPixel(start);
+
+        if(isInside(up) && (this.getPixel(up) == nieghborColor || this.getPixel(up) > myValue +1)){
+            this.setPixel(up, myValue +1);
+            howManyMarked++;
+        }
+        if(isInside(down) && (this.getPixel(down) == nieghborColor || this.getPixel(down) > myValue +1)){
+            this.setPixel(down, myValue +1);
+            howManyMarked++;
+        }
+        if(isInside(left) && (this.getPixel(left) == nieghborColor || this.getPixel(left) > myValue +1)) {
+            this.setPixel(left, myValue + 1);
+            howManyMarked++;
+        }
+        if(isInside(right) && (this.getPixel(right) == nieghborColor || this.getPixel(right) > myValue +1)){
+            this.setPixel(right, myValue +1);
+            howManyMarked++;
+        }
+        return howManyMarked;
+    }
+
+    private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic, int nieghborColor, int obsColor){
+        if(!isInside(start) || !isInside(target)){return;}
+        if(start.equals(target)){return;}
+
+        int howMany = markNieghbors(start, nieghborColor, cyclic);
+        if (howMany == 0) {
+            return;
+        }
+        Pixel2D up = new Index2D(start.getX(), start.getY()-1);
+        Pixel2D down = new Index2D(start.getX(), start.getY()+1);
+        Pixel2D left = new Index2D(start.getX()-1, start.getY());
+        Pixel2D right = new Index2D(start.getX()+1, start.getY());
+
+        if(cyclic && up.getY()<0){
+            up = new Index2D(start.getX(), this.getHeight()-1);
+        }
+        if(cyclic && down.getY()>=this.getHeight()) {
+            down = new Index2D(start.getX(), 0);
+        }
+        if(cyclic && left.getX()<0){
+            left = new Index2D(this.getWidth()-1, start.getY());
+        }
+        if(cyclic && right.getX()>=this.getWidth()){
+            right = new Index2D(0, start.getY());
+        }
+        if (isInside(up) && getPixel(up) == getPixel(start) +1) {
+            markSteps(up, target, cyclic, nieghborColor, obsColor);
+        }
+        if (isInside(down)&& getPixel(down) == getPixel(start) +1) {
+            markSteps(down, target, cyclic, nieghborColor, obsColor);
+        }
+        if (isInside(left)&& getPixel(left) == getPixel(start) +1) {
+            markSteps(left, target, cyclic, nieghborColor, obsColor);
+        }
+        if (isInside(right)&& getPixel(right) == getPixel(start) +1) {
+            markSteps(right, target, cyclic, nieghborColor, obsColor);
+        }
+    }
+    private Pixel2D goBack(Pixel2D target, boolean cyclic){
+        Pixel2D ans = null;
+        int myValue = this.getPixel(target);
+        Pixel2D up = new Index2D(target.getX(), target.getY()-1);
+        Pixel2D down = new Index2D(target.getX(), target.getY()+1);
+        Pixel2D left = new Index2D(target.getX()-1, target.getY());
+        Pixel2D right = new Index2D(target.getX()+1, target.getY());
+        if(cyclic && up.getY()<0){
+            up = new Index2D(target.getX(), this.getHeight()-1);
+        }
+        if(cyclic && down.getY()>=this.getHeight()) {
+            down = new Index2D(target.getX(), 0);
+        }
+        if(cyclic && left.getX()<0){
+            left = new Index2D(this.getWidth()-1, target.getY());
+        }
+        if(cyclic && right.getX()>=this.getWidth()){
+            right = new Index2D(0, target.getY());
+        }
+
+        if(isInside(up) && this.getPixel(up) == myValue -1){
+            ans = up;
+        }
+        else if(isInside(down) && this.getPixel(down) == myValue -1){
+            ans = down;
+        }
+        else if(isInside(left) && this.getPixel(left) == myValue -1){
+            ans = left;
+        }
+        else if(isInside(right) && this.getPixel(right) == myValue -1){
+            ans = right;
+        }
+        return ans;
+    }
+    private void printMap(){
+        for(int i=0; i< this.getWidth(); i++){
+            for(int j=0; j< this.getHeight(); j++){
+                System.out.print(this.getPixel(i,j)+" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        return;
+    }
+    static void main(String[] args) {
+        Map map = new Map(30);
+        for(int i=0; i<map.getWidth()-1; i++){
+            map.setPixel(i, 5, -2);
+        }
+        Pixel2D start = new Index2D(0,0);
+        Pixel2D target = new Index2D(4,9);
+        Pixel2D[] ans = map.shortestPath(start, target, -2, false);
+        for(int i=0; i<ans.length; i++){
+            map.setPixel(ans[i], 1);
+        }
+        map.printMap();
+        System.out.println("how many steps: " + (ans.length -1));
+    }
 
 }
