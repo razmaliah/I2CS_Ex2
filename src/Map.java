@@ -290,6 +290,12 @@ public class Map implements Map2D, Serializable{
                 int dx = right.getX() - left.getX(); // dx >=0
                 int dy = right.getY() - left.getY();
                 int steps = Math.max(Math.abs(dx), Math.abs(dy));
+                if (dx == 0) { // vertical line
+                    for (int j = Math.min(left.getY(), right.getY()); j <= Math.max(left.getY(), right.getY()); j++) {
+                        this.setPixel(left.getX(), j, color);
+                    }
+                    return;
+                }
                 double xInc = (double) dx / (double) steps; // increment in x for each step
                 double a = (double) dy/(double) dx; // represent a from y = ax + b
                 double b = left.getY() - a * left.getX(); // represent b from y = ax + b
@@ -575,18 +581,36 @@ public class Map implements Map2D, Serializable{
         return;
     }
     static void main(String[] args) {
-        Map map = new Map(30);
-        for(int i=0; i<map.getWidth()-1; i++){
-            map.setPixel(i, 5, -2);
-        }
+        Map map = new Map(10,15,0);
+        Pixel2D p1 = new Index2D(8,3);
+        Pixel2D p2 = new Index2D(8,12);
+        Pixel2D p3 = new Index2D(1,12);
+        Pixel2D p4 = new Index2D(1,3);
+        Pixel2D p5 = new Index2D(6,3);
+        Pixel2D p6 = new Index2D(6,10);
+        Pixel2D p7 = new Index2D(3,10);
+        Pixel2D p8 = new Index2D(3,5);
+
+
+        map.drawLine(p1,p2, -2);
+        map.drawLine(p2,p3, -2);
+        map.drawLine(p3,p4, -2);
+        map.drawLine(p4,p5, -2);
+        map.drawLine(p5,p6, -2);
+        map.drawLine(p6,p7, -2);
+        map.drawLine(p7,p8, -2);
+        map.printMap();
+
         Pixel2D start = new Index2D(0,0);
-        Pixel2D target = new Index2D(4,9);
+        Pixel2D target = new Index2D(5,7);
         Pixel2D[] ans = map.shortestPath(start, target, -2, false);
         for(int i=0; i<ans.length; i++){
             map.setPixel(ans[i], 1);
         }
         map.printMap();
         System.out.println("how many steps: " + (ans.length -1));
+
+
     }
 
 }
