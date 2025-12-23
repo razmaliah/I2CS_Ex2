@@ -433,7 +433,7 @@ public class Map implements Map2D, Serializable{
         tempMap.resetMap(obsColor);
         tempMap.setPixel(start, 0);
         //tempMap.printMap();
-        tempMap.markSteps(start, target, cyclic, obsColor);
+        tempMap.markSteps(start, target, cyclic);
         //tempMap.printMap();
         int howManySteps = tempMap.getPixel(target);
         if (howManySteps < 0) {return null;} // no path found
@@ -447,17 +447,23 @@ public class Map implements Map2D, Serializable{
 	}
     @Override
     public Map2D allDistance(Pixel2D start, int obsColor, boolean cyclic) {
-        Map2D ans = null;  // the result.
-
+        Map ans = null;  // the result.
+        if (start == null || !isInside(start)){return ans;}
+        ans = new Map(this.getMap());
+        ans.resetMap(obsColor);
+        ans.setPixel(start, 0);
         return ans;
     }
+
+    ////////////////////// Private Methods ///////////////////////
+
+
 
     /**
      * Resets the map for the shortest path computation.
      * all obstacle pixels (obstColor) are set to -2.
      * all other pixels are set to -1.
      */
-    ////////////////////// Private Methods ///////////////////////
     private void resetMap(int obstColor){
         for(int i=0;i<this.getWidth();i++){
             for(int j=0;j<this.getHeight();j++){
@@ -470,6 +476,7 @@ public class Map implements Map2D, Serializable{
             }
         }
     }
+
     private int markNieghbors(Pixel2D start, boolean cyclic){
         int howManyMarked =0;
         Pixel2D up = new Index2D(start.getX(), start.getY()-1);
@@ -509,7 +516,7 @@ public class Map implements Map2D, Serializable{
         return howManyMarked;
     }
 
-    private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic, int obsColor){
+    private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic){
         if(!isInside(start) || !isInside(target)){return;}
         if(start.equals(target)){return;}
 
@@ -535,16 +542,16 @@ public class Map implements Map2D, Serializable{
             right = new Index2D(0, start.getY());
         }
         if (isInside(up) && getPixel(up) == getPixel(start) +1) {
-            markSteps(up, target, cyclic, obsColor);
+            markSteps(up, target, cyclic);
         }
         if (isInside(down)&& getPixel(down) == getPixel(start) +1) {
-            markSteps(down, target, cyclic, obsColor);
+            markSteps(down, target, cyclic);
         }
         if (isInside(left)&& getPixel(left) == getPixel(start) +1) {
-            markSteps(left, target, cyclic, obsColor);
+            markSteps(left, target, cyclic);
         }
         if (isInside(right)&& getPixel(right) == getPixel(start) +1) {
-            markSteps(right, target, cyclic, obsColor);
+            markSteps(right, target, cyclic);
         }
     }
     private Pixel2D goBack(Pixel2D target, boolean cyclic){
