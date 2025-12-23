@@ -422,15 +422,22 @@ public class Map implements Map2D, Serializable{
 	 * https://en.wikipedia.org/wiki/Breadth-first_search
 	 */
 	public Pixel2D[] shortestPath(Pixel2D start, Pixel2D target, int obsColor, boolean cyclic) {
-		Pixel2D[] ans = null;  // the result.
+		Pixel2D[] ans = null;
+        if (start == null || target == null || !isInside(start) || !isInside(target)){return ans;}
+        if (start.equals(target)){
+            ans = new Pixel2D[1];
+            ans[0] = start;
+            return ans;
+        }
         Map tempMap = new Map(this.getMap());
         tempMap.resetMap(obsColor);
         tempMap.setPixel(start, 0);
-        tempMap.printMap();
+        //tempMap.printMap();
         tempMap.markSteps(start, target, cyclic, obsColor);
-        tempMap.printMap();
+        //tempMap.printMap();
         int howManySteps = tempMap.getPixel(target);
-        ans = new Pixel2D[howManySteps+1];
+        if (howManySteps < 0) {return null;} // no path found
+        ans = new Pixel2D[howManySteps+1];      // from start to target is steps +1 pixels
         Pixel2D curr = target;
         for(int i=howManySteps; i>=0; i--){
             ans[i] = curr;

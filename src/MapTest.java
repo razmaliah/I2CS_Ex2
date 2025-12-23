@@ -229,6 +229,25 @@ class MapTest {
         }
         assertTrue(ans);
         assertEquals(25, res);
-
+    }
+    @Test
+    void testShortestPath() {
+        _m0 = new Map(11);
+        for(int i=1;i<_m0.getHeight();i++){
+            _m0.setPixel(5,i,1);
+        }
+        Pixel2D start = new Index2D(4,10);
+        Pixel2D target = new Index2D(6,10);
+        Pixel2D[] ans = _m0.shortestPath(start, target, 1, false);
+        int res = _m0.getHeight()*2 +1;     //the path going all the way up 2 steps right and all the way down
+        assertEquals(res,ans.length);
+        ans = _m0.shortestPath(start, target, 1, true);
+        res = 5;     // 4 steps + 1 (down,right*2,up)
+        assertEquals(res,ans.length);
+        ans = _m0.shortestPath(start, start, 1, false);
+        assertEquals(1,ans.length);         // check start equals target
+        _m0.setPixel(5,0,1);    // blocking the path
+        ans = _m0.shortestPath(start, target, 1, false);
+        assertNull(ans);
     }
 }
