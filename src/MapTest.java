@@ -250,7 +250,47 @@ class MapTest {
         ans = _m0.shortestPath(start, target, 1, false);
         assertNull(ans);
     }
-
+    @Test
+    void testAllDistance() {
+        _m0 = new Map(5);
+        Pixel2D p = new Index2D(2,2);
+        _m0 = _m0.allDistance(p,1,false);
+        int[][] dists = _m0.getMap();
+        int[][] expected = {
+                {4,3,2,3,4},
+                {3,2,1,2,3},
+                {2,1,0,1,2},
+                {3,2,1,2,3},
+                {4,3,2,3,4}
+        };
+        for(int i=0;i<5;i++){
+            assertArrayEquals(expected[i], dists[i]);
+        }
+        _m0 = new Map(11);
+        for(int i=0;i<_m0.getHeight();i++){
+            _m0.setPixel(5,i,1);
+        }
+        p = new Index2D(0,0);
+        _m0 = _m0.allDistance(p,1,false);
+        boolean ans = true;
+        for(int i=0;i<_m0.getWidth();i++) {
+            for (int j = 0; j < _m0.getHeight(); j++) {
+                Pixel2D curr = new Index2D(i, j);
+                if (i < 5) {
+                    ans = ans && (_m0.getPixel(curr) == (i + j));
+                }
+                if (i == 5) {
+                    ans = ans && (_m0.getPixel(curr) == 1);
+                }
+                if (i > 5) {
+                    ans = ans && (_m0.getPixel(curr) == 0);
+                }
+                System.out.print(_m0.getPixel(curr) + " ");
+            }
+            System.out.println();
+        }
+        //assertTrue(ans);
+    }
 
 
 }

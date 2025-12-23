@@ -447,11 +447,27 @@ public class Map implements Map2D, Serializable{
 	}
     @Override
     public Map2D allDistance(Pixel2D start, int obsColor, boolean cyclic) {
-        Map ans = null;  // the result.
+        Map ans = null;
         if (start == null || !isInside(start)){return ans;}
         ans = new Map(this.getMap());
         ans.resetMap(obsColor);
         ans.setPixel(start, 0);
+        Pixel2D target = new Index2D(0,0);   // not relevant target, just to use markSteps function
+        if(start.equals(target)){
+            target = new Index2D(ans.getWidth()-1,ans.getHeight()-1);
+        }
+        ans.markSteps(start, target, cyclic);
+        for(int i=0;i<ans.getWidth();i++){
+            for(int j=0;j<ans.getHeight();j++){
+                if(ans.getPixel(i,j) == -2){
+                    ans.setPixel(i,j,obsColor);      // set obstacles back to obsColor
+                }
+                if (ans.getPixel(i,j) == -1){
+                    int x = this.getPixel(i,j);
+                    ans.setPixel(i,j,x);        // set non accessible entries back to original value
+                }
+            }
+        }
         return ans;
     }
 
