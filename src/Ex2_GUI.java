@@ -23,7 +23,7 @@ public class Ex2_GUI {
         }
         int width = map.getWidth();
         int height = map.getHeight();
-        StdDraw.setCanvasSize(700, 700);
+        StdDraw.setCanvasSize(750, 750);
         StdDraw.setXscale(0, width);
         StdDraw.setYscale(0, height);
         for (int i = 0; i < width; i++) {
@@ -34,12 +34,15 @@ public class Ex2_GUI {
                 } else {
                     StdDraw.setPenColor(StdDraw.BLUE);
                 }
-                StdDraw.filledCircle(i + 0.5, j + 0.5, 0.25);
+                StdDraw.filledSquare(i + 0.5, j + 0.5, 0.25);
             }
         }
     }
 
     /**
+     * this function loads a map from a text file. the format is:
+     * first line: width height (with space between)
+     * next lines: the pixel values row by row (with space between)
      * @param mapFileName
      * @return
      */
@@ -94,18 +97,37 @@ public class Ex2_GUI {
             e.printStackTrace();
         }
     }
+
     public static void main(String[] a) {
         String mapFile = "map1.txt";
-        Map2D map =new Map(30,15,0);
+        Map2D map =new Map(5,5,0);
         for (int i=0;i<map.getWidth();i++) {
-            map.setPixel(i, 7, 1);
+            map.setPixel(i, 2, 1);
         }
-        saveMap(map, mapFile);
-        Map2D map2 = loadMap(mapFile);
-        map2.setPixel(7,7,100);
-        saveMap(map2, "map2.txt");
-        //drawMap(map);
+        //saveMap(map, mapFile);
+        //Map2D map2 = loadMap(mapFile);
+        //map2.setPixel(7,7,100);
+        //saveMap(map2, "map2.txt");
+        drawMap(map);
+
     }
 
     /// ///////////// Private functions ///////////////
+
+    private Color intToColor(int c) {
+        switch (c) {
+            case 0:
+                return Color.WHITE;
+            case 1:
+                return Color.BLACK;
+            case 2:
+                return Color.BLUE;
+            case 3:
+                return Color.RED;
+            case 4:
+                return Color.GREEN;
+            default:
+                return Color.GRAY;
+        }
+    }
 }

@@ -424,10 +424,10 @@ public class Map implements Map2D, Serializable{
 	public Pixel2D[] shortestPath(Pixel2D start, Pixel2D target, int obsColor, boolean cyclic) {
 		Pixel2D[] ans = null;  // the result.
         Map tempMap = new Map(this.getMap());
-        int validColor = tempMap.resetMap(obsColor);
+        tempMap.resetMap(obsColor);
         tempMap.setPixel(start, 0);
         tempMap.printMap();
-        tempMap.markSteps(start, target, cyclic, validColor, obsColor);
+        tempMap.markSteps(start, target, cyclic, obsColor);
         tempMap.printMap();
         int howManySteps = tempMap.getPixel(target);
         ans = new Pixel2D[howManySteps+1];
@@ -444,22 +444,26 @@ public class Map implements Map2D, Serializable{
 
         return ans;
     }
-	////////////////////// Private Methods ///////////////////////
-    private int resetMap(int obstColor){
-        int validColor = -1;
-        if(obstColor == validColor){
-            validColor = -2;
-        }
+
+    /**
+     * Resets the map for the shortest path computation.
+     * all obstacle pixels (obstColor) are set to -2.
+     * all other pixels are set to -1.
+     */
+    ////////////////////// Private Methods ///////////////////////
+    private void resetMap(int obstColor){
         for(int i=0;i<this.getWidth();i++){
             for(int j=0;j<this.getHeight();j++){
-                if(this.getPixel(i,j) != obstColor){
-                    this.setPixel(i,j,validColor);
+                if(this.getPixel(i,j) == obstColor){
+                    this.setPixel(i,j,-2);
+                }
+                else{
+                    this.setPixel(i,j,-1);
                 }
             }
         }
-        return validColor;
     }
-    private int markNieghbors(Pixel2D start, int nieghborColor, boolean cyclic){
+    private int markNieghbors(Pixel2D start, boolean cyclic){
         int howManyMarked =0;
         Pixel2D up = new Index2D(start.getX(), start.getY()-1);
         Pixel2D down = new Index2D(start.getX(), start.getY()+1);
@@ -479,30 +483,30 @@ public class Map implements Map2D, Serializable{
         }
         int myValue = this.getPixel(start);
 
-        if(isInside(up) && (this.getPixel(up) == nieghborColor || this.getPixel(up) > myValue +1)){
+        if(isInside(up) && (this.getPixel(up) == -1 || this.getPixel(up) > myValue +1)){
             this.setPixel(up, myValue +1);
             howManyMarked++;
         }
-        if(isInside(down) && (this.getPixel(down) == nieghborColor || this.getPixel(down) > myValue +1)){
+        if(isInside(down) && (this.getPixel(down) == -1 || this.getPixel(down) > myValue +1)){
             this.setPixel(down, myValue +1);
             howManyMarked++;
         }
-        if(isInside(left) && (this.getPixel(left) == nieghborColor || this.getPixel(left) > myValue +1)) {
+        if(isInside(left) && (this.getPixel(left) == -1 || this.getPixel(left) > myValue +1)) {
             this.setPixel(left, myValue + 1);
             howManyMarked++;
         }
-        if(isInside(right) && (this.getPixel(right) == nieghborColor || this.getPixel(right) > myValue +1)){
+        if(isInside(right) && (this.getPixel(right) == -1 || this.getPixel(right) > myValue +1)){
             this.setPixel(right, myValue +1);
             howManyMarked++;
         }
         return howManyMarked;
     }
 
-    private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic, int nieghborColor, int obsColor){
+    private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic, int obsColor){
         if(!isInside(start) || !isInside(target)){return;}
         if(start.equals(target)){return;}
 
-        int howMany = markNieghbors(start, nieghborColor, cyclic);
+        int howMany = markNieghbors(start, cyclic);
         if (howMany == 0) {
             return;
         }
@@ -524,16 +528,16 @@ public class Map implements Map2D, Serializable{
             right = new Index2D(0, start.getY());
         }
         if (isInside(up) && getPixel(up) == getPixel(start) +1) {
-            markSteps(up, target, cyclic, nieghborColor, obsColor);
+            markSteps(up, target, cyclic, obsColor);
         }
         if (isInside(down)&& getPixel(down) == getPixel(start) +1) {
-            markSteps(down, target, cyclic, nieghborColor, obsColor);
+            markSteps(down, target, cyclic, obsColor);
         }
         if (isInside(left)&& getPixel(left) == getPixel(start) +1) {
-            markSteps(left, target, cyclic, nieghborColor, obsColor);
+            markSteps(left, target, cyclic, obsColor);
         }
         if (isInside(right)&& getPixel(right) == getPixel(start) +1) {
-            markSteps(right, target, cyclic, nieghborColor, obsColor);
+            markSteps(right, target, cyclic, obsColor);
         }
     }
     private Pixel2D goBack(Pixel2D target, boolean cyclic){
@@ -581,7 +585,7 @@ public class Map implements Map2D, Serializable{
         return;
     }
     static void main(String[] args) {
-        Map map = new Map(10,15,0);
+        Map map = new Map(100,100,0);
         Pixel2D p1 = new Index2D(8,3);
         Pixel2D p2 = new Index2D(8,12);
         Pixel2D p3 = new Index2D(1,12);
