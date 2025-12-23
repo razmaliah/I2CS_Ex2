@@ -15,7 +15,10 @@ public class Map implements Map2D, Serializable{
 
     // edit this class below
     private int[][] _map;
-
+    private static long counter = 0;
+    public static long getCounter(){
+        return counter;
+    }
 	/**
 	 * Constructs a w*h 2D raster map with an init value v.
 	 * @param w - width of the map
@@ -359,11 +362,18 @@ public class Map implements Map2D, Serializable{
         }
         return ans;
     }
+
+    /**
+     * Fill the connected component of p in the new color (new_v).
+     * Note: the connected component of p are all the pixels in the map with the same "color" of map[p] which are connected to p.
+     * Note: two pixels (p1,p2) are connected if there is a path between p1 and p2 with the same color (of p1 and p2).
+     * for more info see - https://en.wikipedia.org/wiki/Flood_fill
+     * @param xy the source pixel to start from.
+     * @param new_v the new "color" to be filled in p's connected component.
+     * @param cyclic if true --> the map is assumed to be cyclic.
+     * @return the number of "filled" pixels.
+     */
 	@Override
-	/** 
-	 * Fills this map with the new color (new_v) starting from p.
-	 * https://en.wikipedia.org/wiki/Flood_fill
-	 */
 	public int fill(Pixel2D xy, int new_v,  boolean cyclic) {
 		int ans = 0;
         if(xy == null || !isInside(xy)){return ans;}
@@ -445,6 +455,16 @@ public class Map implements Map2D, Serializable{
         }
 		return ans;
 	}
+
+    /**
+     * Compute a new map (with the same dimension as this map) witch every entry value equals to
+     * the shortest path distance (obstacle avoiding) from the start point to that entry.
+     * Note : obsColor entries will remain as obsColor in the returned map. (if obsColor is 2 it's not 2 steps away, it's an obstacle)
+     * @param start the source (starting) pixel
+     * @param obsColor the color representing obstacles
+     * @param cyclic if true --> the map is assumed to be cyclic.
+     * @return a new map with all the shortest path distances from the starting pixel to each entry in this map.
+     */
     @Override
     public Map2D allDistance(Pixel2D start, int obsColor, boolean cyclic) {
         Map ans = null;
@@ -452,19 +472,15 @@ public class Map implements Map2D, Serializable{
         ans = new Map(this.getMap());
         ans.resetMap(obsColor);
         ans.setPixel(start, 0);
-        Pixel2D target = new Index2D(0,0);   // not relevant target, just to use markSteps function
-        if(start.equals(target)){
-            target = new Index2D(ans.getWidth()-1,ans.getHeight()-1);
+        Pixel2D target = new Index2D(ans.getWidth()-1 - start.getX(),ans.getHeight()-1 - start.getY());   // not relevant target, just to use markSteps function
+        if (start.equals(target)){
+            target = new Index2D(0,0);
         }
         ans.markSteps(start, target, cyclic);
         for(int i=0;i<ans.getWidth();i++){
             for(int j=0;j<ans.getHeight();j++){
                 if(ans.getPixel(i,j) == -2){
                     ans.setPixel(i,j,obsColor);      // set obstacles back to obsColor
-                }
-                if (ans.getPixel(i,j) == -1){
-                    int x = this.getPixel(i,j);
-                    ans.setPixel(i,j,x);        // set non accessible entries back to original value
                 }
             }
         }
@@ -529,13 +545,13 @@ public class Map implements Map2D, Serializable{
             this.setPixel(right, myValue +1);
             howManyMarked++;
         }
+        counter += howManyMarked;
         return howManyMarked;
     }
 
     private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic){
         if(!isInside(start) || !isInside(target)){return;}
         if(start.equals(target)){return;}
-
         int howMany = markNieghbors(start, cyclic);
         if (howMany == 0) {
             return;

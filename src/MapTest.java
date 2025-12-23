@@ -214,6 +214,10 @@ class MapTest {
         }
         assertTrue(ans);
     }
+
+    /**
+     * test fill function by filling a 5x5 map from the center point (2,2) with value 1 and check if all the map is 1
+     */
     @Test
     void testFill() {
         _m0 = new Map(5);
@@ -230,6 +234,13 @@ class MapTest {
         assertTrue(ans);
         assertEquals(25, res);
     }
+    /**
+     * test shortestPath function in 4 different cases:
+     * 1. 11X11 map with vertical obstacle without one Pixel, non-cyclic
+     * 2. 11X11 map with vertical obstacle without one Pixel, cyclic
+     * 3. when start pixel equals to target pixel
+     * 4. blocking the path completely (no valid path)
+     */
     @Test
     void testShortestPath() {
         _m0 = new Map(11);
@@ -239,17 +250,36 @@ class MapTest {
         Pixel2D start = new Index2D(4,10);
         Pixel2D target = new Index2D(6,10);
         Pixel2D[] ans = _m0.shortestPath(start, target, 1, false);
+
+        System.out.println("counter: " + Map.getCounter());
+
         int res = _m0.getHeight()*2 +1;     //the path going all the way up 2 steps right and all the way down
         assertEquals(res,ans.length);
         ans = _m0.shortestPath(start, target, 1, true);
+
+        System.out.println("counter: " + Map.getCounter());
+
         res = 5;     // 4 steps + 1 (down,right*2,up)
         assertEquals(res,ans.length);
         ans = _m0.shortestPath(start, start, 1, false);
+
+        System.out.println("counter: " + Map.getCounter());
+
         assertEquals(1,ans.length);         // check start equals target
         _m0.setPixel(5,0,1);    // blocking the path
         ans = _m0.shortestPath(start, target, 1, false);
+
+        System.out.println("counter: " + Map.getCounter());
+
         assertNull(ans);
     }
+
+    /**
+     * test allDistance function in 3 different cases:
+     * 1. small map with center point without obstacles
+     * 2. larger map with vertical obstacle, non-cyclic
+     * 3. larger map with vertical obstacle, cyclic
+     */
     @Test
     void testAllDistance() {
         _m0 = new Map(5);
@@ -271,25 +301,35 @@ class MapTest {
             _m0.setPixel(5,i,1);
         }
         p = new Index2D(0,0);
+        _m1 = _m0.allDistance(p,1,true);
         _m0 = _m0.allDistance(p,1,false);
-        boolean ans = true;
+        boolean ans0 = true, ans1 = true;
         for(int i=0;i<_m0.getWidth();i++) {
             for (int j = 0; j < _m0.getHeight(); j++) {
                 Pixel2D curr = new Index2D(i, j);
-                if (i < 5) {
-                    ans = ans && (_m0.getPixel(curr) == (i + j));
+                if (i<5 && _m0.getPixel(curr) != (i + j)) {
+                    ans0 = false;
+                    ans1 = false;
                 }
-                if (i == 5) {
-                    ans = ans && (_m0.getPixel(curr) == 1);
+                if (i==5 && _m0.getPixel(curr) != 1) {
+                    ans0 = false;
+                    ans1 = false;
                 }
-                if (i > 5) {
-                    ans = ans && (_m0.getPixel(curr) == 0);
+                if (i>5) {
+                    if(_m0.getPixel(curr) != -1) {
+                        ans0 = false;
+                    }
+                    if (j<=5 && _m1.getPixel(curr) != ((_m1.getWidth()-i) + j)) {
+                        ans1 = false;
+                    }
+                    if(j>5 && _m1.getPixel(curr) != ((_m1.getWidth()-i) + ( _m1.getHeight()-j))) {
+                        ans1 = false;
+                    }
                 }
-                System.out.print(_m0.getPixel(curr) + " ");
             }
-            System.out.println();
         }
-        //assertTrue(ans);
+        assertTrue(ans0);
+        assertTrue(ans1);
     }
 
 

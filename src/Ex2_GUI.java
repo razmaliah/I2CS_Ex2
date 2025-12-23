@@ -23,18 +23,18 @@ public class Ex2_GUI {
         }
         int width = map.getWidth();
         int height = map.getHeight();
-        StdDraw.setCanvasSize(750, 750);
+        double ratio = (double) height / (double) width;
+        int canvasHeight = 750;
+        int canvasWidth = Math.min(1500 ,(int) (canvasHeight / ratio));
+        StdDraw.setCanvasSize(canvasWidth, canvasHeight);
         StdDraw.setXscale(0, width);
         StdDraw.setYscale(0, height);
+        StdDraw.clear(StdDraw.BLACK);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 int pixel = map.getPixel(i, j);
-                if (pixel == 1) {
-                    StdDraw.setPenColor(StdDraw.BLACK);
-                } else {
-                    StdDraw.setPenColor(StdDraw.BLUE);
-                }
-                StdDraw.filledSquare(i + 0.5, j + 0.5, 0.25);
+                StdDraw.setPenColor(intToColor(pixel));
+                StdDraw.filledSquare(i + 0.5, j + 0.5, 0.49);
             }
         }
     }
@@ -100,7 +100,7 @@ public class Ex2_GUI {
 
     public static void main(String[] a) {
         String mapFile = "map1.txt";
-        Map2D map =new Map(5,5,0);
+        Map2D map =new Map(100,30,0);
         for (int i=0;i<map.getWidth();i++) {
             map.setPixel(i, 2, 1);
         }
@@ -114,20 +114,13 @@ public class Ex2_GUI {
 
     /// ///////////// Private functions ///////////////
 
-    private Color intToColor(int c) {
-        switch (c) {
-            case 0:
-                return Color.WHITE;
-            case 1:
-                return Color.BLACK;
-            case 2:
-                return Color.BLUE;
-            case 3:
-                return Color.RED;
-            case 4:
-                return Color.GREEN;
-            default:
-                return Color.GRAY;
-        }
+    private static Color intToColor(int c) {
+        if(c==0){return StdDraw.WHITE;}
+        if(c==1){return StdDraw.YELLOW;}
+        if(c==2){return StdDraw.BLUE;}
+        if(c==3){return StdDraw.RED;}
+        if(c==4){return StdDraw.GREEN;}
+        if(c==5){return StdDraw.PINK;}
+        return StdDraw.GRAY;
     }
 }
