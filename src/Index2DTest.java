@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class Index2DTest {
     @Test
@@ -13,9 +13,10 @@ public class Index2DTest {
 
         Index2D index3 = new Index2D(1,1);
         assertFalse(index1.equals(index3));
-
+        assertFalse(index1.equals("some string"));
         Index2D index4 = null;
         assertFalse(index1.equals(index4));
+
     }
 
     @Test
@@ -23,6 +24,7 @@ public class Index2DTest {
         Index2D index = new Index2D(1, 2);
         assertEquals(1, index.getX());
         assertEquals(2, index.getY());
+
     }
 
     @Test

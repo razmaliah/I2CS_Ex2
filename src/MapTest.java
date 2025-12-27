@@ -22,13 +22,24 @@ class MapTest {
     }
     @Test
     @Timeout(value = 1, unit = SECONDS)
-    void tesInit() {
+    void testInit() {
         int[][] bigarr = new int [500][500];
         _m1 = new Map(bigarr);
         assertEquals(bigarr.length, _m1.getWidth());
         assertEquals(bigarr[0].length, _m1.getHeight());
-        Pixel2D p1 = new Index2D(3,2);
-        //_m1.fill(p1,1, true);
+        assertThrowsExactly(RuntimeException.class, () -> {
+            _m0 = new Map(0,5,0);
+        });
+        int[][] arr2 = new int[5][0];
+        assertThrowsExactly(RuntimeException.class, () -> {
+            _m0 = new Map(arr2);
+        });
+        int [] ar1 = new int[5];
+        int [] ar2 = new int[4];
+        int [][] arr3 = {ar1, ar2};
+        assertThrowsExactly(RuntimeException.class, () -> {
+            _m0 = new Map(arr3);
+        });
     }
 
     @Test

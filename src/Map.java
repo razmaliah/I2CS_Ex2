@@ -43,17 +43,21 @@ public class Map implements Map2D, Serializable{
     /**
      * Construct a 2D w*h matrix of integers.
      * v is the init value of all the entries in the 2D array.
+     * @throws RuntimeException if w <=0 or h <=0.
      * @param w the width of the underlying 2D array.
      * @param h the height of the underlying 2D array.
      * @param v the init value of all the entries in the 2D array.
      */
 	@Override
 	public void init(int w, int h, int v) {
+        if (w <= 0 || h <= 0) {
+            throw new RuntimeException("Invalid dimensions for the map");
+        }
         this._map = new int[w][h];
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 this._map[i][j] = v;
-	}
+	        }
         }
     }
     /**
@@ -632,7 +636,7 @@ public class Map implements Map2D, Serializable{
     }
     static void main(String[] args) {
         Map map = new Map(100,100,0);
-        Pixel2D p1 = new Index2D(8,3);
+        Index2D p1 = new Index2D(8,3);
         Pixel2D p2 = new Index2D(8,12);
         Pixel2D p3 = new Index2D(1,12);
         Pixel2D p4 = new Index2D(1,3);

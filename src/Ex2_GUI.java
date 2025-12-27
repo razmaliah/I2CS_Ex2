@@ -100,10 +100,18 @@ public class Ex2_GUI {
 
     public static void main(String[] a) {
         String mapFile = "map1.txt";
-        Map2D map =new Map(100,30,0);
-        for (int i=0;i<map.getWidth();i++) {
-            map.setPixel(i, 2, 1);
+        Map2D map =new Map(30,30,0);
+        for (int i=1;i<map.getHeight();i++) {
+            map.setPixel(10, i, 1);
         }
+        Index2D start = new Index2D(0,9);
+        Index2D target = new Index2D(29,29);
+        Pixel2D[] p = map.shortestPath(start, target , 1, false);
+        for (Pixel2D pixel : p) {
+            map.setPixel(pixel, 3);
+        }
+        start = new Index2D(0,6);
+        map.fill(start,4,true);
         //saveMap(map, mapFile);
         //Map2D map2 = loadMap(mapFile);
         //map2.setPixel(7,7,100);

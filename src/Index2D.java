@@ -2,6 +2,7 @@
 public class Index2D implements Pixel2D {
     private int _x;
     private int _y;
+    public final static Index2D ORIGO = new Index2D(0,0);
     /**
      * Constructor that creates a 2D index (w,h).
      * @param w - reprtesents the width (x coordinate)
@@ -14,7 +15,7 @@ public class Index2D implements Pixel2D {
 
     /**
      * Copy constructor, creates a deep copy of other Index2D.
-     * @param other
+     * @param other - another Pixel2D
      */
     public Index2D(Pixel2D other) {
         this._x = other.getX();
@@ -48,7 +49,7 @@ public class Index2D implements Pixel2D {
     public double distance2D(Pixel2D p2) {
         double dx = this._x - p2.getX();
         double dy = this._y - p2.getY();
-        return Math.sqrt(dx * dx + dy * dy);
+        return Math.sqrt(dx*dx + dy*dy);
     }
 
     /**
