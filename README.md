@@ -37,3 +37,6 @@ at the GUI example before, after the green fill and before the blue circle the p
 the load function need to be used ONLY with the format that given below:
 
 ![img_1.png](img_1.png)
+
+1. in the first line you can the dimensions of the map, the first number represent the width and the second the height.
+2. after that is the data of the map which it upside down (the first line is the pixel which width =0 and so on), the right and left are sync.
