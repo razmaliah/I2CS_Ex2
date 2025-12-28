@@ -24,9 +24,16 @@ This is a list of elected functions from this class, for more info and another f
 
 In the Ex2_GUI.java you can find main that includes some examples for the functions in the map.
 this is an example after running the main:
+
 ![img.png](img.png)
 
 You can see:
 1. The yellow line represent an obstacle, and the red path is the shortest path between the two edges.
 2. The green area is a fill option at (0,6) with the color green, its stopped at the obstacle. the red path and the edges of the map (none cyclic map).
 3. The blue circle is a drawCircle function with center (15,12) and 3.5 radius
+
+also you can save the map to txt file and load another map from txt file using save and load function from Ex2_GUI.java
+at the GUI example before, after the green fill and before the blue circle the program save the map to a txt file and the load it to another map.
+the load function need to be used ONLY with the format that given below:
+
+![img_1.png](img_1.png)
