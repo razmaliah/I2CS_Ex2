@@ -24,12 +24,17 @@ This is a list of elected functions from this class, for more info and another f
 
 In the Ex2_GUI.java you can find main that includes some examples for the functions in the map.
 this is an example after running the main:
-
+                                    
+                              Start map with obstacle
 ![Start map with obstacle](img_2.png "Start map with obstacle")
+
+                        The shortest path(red) between the gray pixels
 
 ![The shortest path(red) between the gray pixels](img_3.png "The shortest path(red) between the gray pixels")
 
-![img.png](img.png)
+                        After fill area with green and draw a blue circle
+
+![After fill area with green and draw a blue circle](img.png "After fill area with green and draw a blue circle")
 
 You can see:
 1. The yellow line represent an obstacle, and the red path is the shortest path between the two edges.
@@ -39,6 +44,8 @@ You can see:
 also you can save the map to txt file and load another map from txt file using save and load function from Ex2_GUI.java
 at the GUI example before, after the green fill and before the blue circle the program save the map to a txt file and the load it to another map.
 the load function need to be used ONLY with the format that given below:
+        
+    The output to a txt file (and the format is needed to load a map from txt file)
 
 ![img_1.png](img_1.png)
 

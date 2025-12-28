@@ -119,7 +119,7 @@ public class Ex2_GUI {
         map.setPixel(start,6);
         map.setPixel(target,6);
         drawMap(map); // add the shortest path between the pixels
-        StdDraw.pause(5000);
+        StdDraw.pause(2000);
         start = new Index2D(0,6);
         map.fill(start,4,false); // fill the left side of the obstacle to GREEN color
         drawMap(map); // add the filled area
