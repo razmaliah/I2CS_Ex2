@@ -100,28 +100,37 @@ public class Ex2_GUI {
 
     public static void main(String[] a) {
         String mapFile = "map1.txt";
-        Map2D map =new Map(30,30,0);
+        Map2D map =new Map(20,20,0);
         for (int i=1;i<map.getHeight();i++) {
             map.setPixel(10, i, 1);
         }
-        Index2D start = new Index2D(0,9);
-        Index2D target = new Index2D(29,29);
+        drawMap(map);
+        StdDraw.pause(2000);
+        Index2D start = new Index2D(5,5);
+        Index2D target = new Index2D(19,19);
+        map.setPixel(start,3);
+        map.setPixel(target,3);
+        drawMap(map);
+        StdDraw.pause(2000);
         Pixel2D[] p = map.shortestPath(start, target , 1, false);
         for (Pixel2D pixel : p) {
-            map.setPixel(pixel, 3);
+            map.setPixel(pixel, 3); // change the shortest path to RED color
         }
+        drawMap(map);
+        StdDraw.pause(2000);
         start = new Index2D(0,6);
-        map.fill(start,4,true);
-        //saveMap(map, mapFile);
-        //Map2D map2 = loadMap(mapFile);
-        //map2.setPixel(7,7,100);
-        //saveMap(map2, "map2.txt");
+        map.fill(start,4,false); // fill the left side of the obstacle to GREEN color
+        drawMap(map);
+        StdDraw.pause(2000);
+        saveMap(map, mapFile);
+        Map2D map2 = loadMap(mapFile);
+        map2.setPixel(7,7,100);
         Index2D center = new Index2D(20,15);
-        map.drawCircle(center, 6,4);
+        map2.drawCircle(center, 6,4);
         Index2D p11 = new Index2D(20,20);
         Index2D p12 = new Index2D(29,29);
-        map.drawRect(p12,p11,5);
-        drawMap(map);
+        map2.drawRect(p12,p11,5);
+        drawMap(map2);
 
     }
 

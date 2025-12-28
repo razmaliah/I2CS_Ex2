@@ -163,7 +163,6 @@ class MapTest {
             for(int j=0;j<10;j++){
                 _m0.setPixel(i,j,i);
             }
-            System.out.println(Arrays.toString(_m0.getMap()[i]));
         }
 
         _m0.rescale(2,1.5);
@@ -173,7 +172,6 @@ class MapTest {
             for(int j=0;j<15;j++){
                 assertEquals(i/2, _m0.getPixel(i,j));
             }
-            System.out.println(Arrays.toString(_m0.getMap()[i]));
         }
     }
     @Test
@@ -350,15 +348,15 @@ class MapTest {
         for(int i=0;i<_m0.getWidth();i++) {
             for (int j = 0; j < _m0.getHeight(); j++) {
                 Pixel2D curr = new Index2D(i, j);
-                if (i<5 && _m0.getPixel(curr) != (i + j)) {
+                if (i<5 && _m0.getPixel(curr) != (i + j)) { // before obstacle line
                     ans0 = false;
                     ans1 = false;
                 }
-                if (i==5 && _m0.getPixel(curr) != 1) {
+                if (i==5 && _m0.getPixel(curr) != 1) { // the obstacle line
                     ans0 = false;
                     ans1 = false;
                 }
-                if (i>5) {
+                if (i>5) { // after obstacle line
                     if(_m0.getPixel(curr) != -1) {
                         ans0 = false;
                     }
