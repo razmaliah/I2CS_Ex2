@@ -11,8 +11,8 @@ for more info see the documentations in Pixel2D.java and Index2D.java
 
 Map class implements Map2D interface and represent a 2D map of Pixels (2D Integer array) which every entry have a color (Integer value).
 the map have some basic function like constructors , getters and setters.
-there some functions for the map like:
-1. shortestPath - compute the shortest path between two pixel while avoiding obstacles.
+there some functions for the map like: (some of them have cyclic map option)
+1. shortestPath - compute the shortest path between two pixel while avoiding obstacles. 
 2. allDistance - return a new map which cell (pixel) value is the shortest path to the pixel from a start pixel (while avoiding obstacles).
 3. fill - fill the connected component of pixel in the new color (new_v), using flood fill algo. 
 4. drawCircle - draw a circle in the map with given center and a radius.
@@ -22,5 +22,11 @@ This is a list of elected functions from this class, for more info and another f
 
 
 
-In the Ex2_GUI.java you can find main that includes some examples for the functions in the map. 
+In the Ex2_GUI.java you can find main that includes some examples for the functions in the map.
+this is an example after running the main:
 ![img.png](img.png)
+
+You can see:
+1. The yellow line represent an obstacle, and the red path is the shortest path between the two edges.
+2. The green area is a fill option at (0,6) with the color green, its stopped at the obstacle. the red path and the edges of the map (none cyclic map).
+3. The blue circle is a drawCircle function with center (15,12) and 3.5 radius
