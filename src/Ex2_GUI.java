@@ -108,16 +108,18 @@ public class Ex2_GUI {
         StdDraw.pause(2000);
         Index2D start = new Index2D(5,5);
         Index2D target = new Index2D(19,19);
-        map.setPixel(start,3);
-        map.setPixel(target,3);
+        map.setPixel(start,6);
+        map.setPixel(target,6);
         drawMap(map); // add  2 pixels
         StdDraw.pause(2000);
         Pixel2D[] p = map.shortestPath(start, target , 1, false);
         for (Pixel2D pixel : p) {
             map.setPixel(pixel, 3); // change the shortest path to RED color
         }
+        map.setPixel(start,6);
+        map.setPixel(target,6);
         drawMap(map); // add the shortest path between the pixels
-        StdDraw.pause(2000);
+        StdDraw.pause(5000);
         start = new Index2D(0,6);
         map.fill(start,4,false); // fill the left side of the obstacle to GREEN color
         drawMap(map); // add the filled area

@@ -25,6 +25,10 @@ This is a list of elected functions from this class, for more info and another f
 In the Ex2_GUI.java you can find main that includes some examples for the functions in the map.
 this is an example after running the main:
 
+![Start map with obstacle](img_2.png "Start map with obstacle")
+
+![The shortest path(red) between the gray pixels](img_3.png "The shortest path(red) between the gray pixels")
+
 ![img.png](img.png)
 
 You can see:
