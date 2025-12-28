@@ -104,34 +104,29 @@ public class Ex2_GUI {
         for (int i=1;i<map.getHeight();i++) {
             map.setPixel(10, i, 1);
         }
-        drawMap(map);
+        drawMap(map); // draw the map with obstacles
         StdDraw.pause(2000);
         Index2D start = new Index2D(5,5);
         Index2D target = new Index2D(19,19);
         map.setPixel(start,3);
         map.setPixel(target,3);
-        drawMap(map);
+        drawMap(map); // add  2 pixels
         StdDraw.pause(2000);
         Pixel2D[] p = map.shortestPath(start, target , 1, false);
         for (Pixel2D pixel : p) {
             map.setPixel(pixel, 3); // change the shortest path to RED color
         }
-        drawMap(map);
+        drawMap(map); // add the shortest path between the pixels
         StdDraw.pause(2000);
         start = new Index2D(0,6);
         map.fill(start,4,false); // fill the left side of the obstacle to GREEN color
-        drawMap(map);
+        drawMap(map); // add the filled area
         StdDraw.pause(2000);
         saveMap(map, mapFile);
         Map2D map2 = loadMap(mapFile);
-        map2.setPixel(7,7,100);
-        Index2D center = new Index2D(20,15);
-        map2.drawCircle(center, 6,4);
-        Index2D p11 = new Index2D(20,20);
-        Index2D p12 = new Index2D(29,29);
-        map2.drawRect(p12,p11,5);
-        drawMap(map2);
-
+        Index2D center = new Index2D(15,12);
+        map2.drawCircle(center, 3.5,2);
+        drawMap(map2); // draw the new loaded map with added circle
     }
 
     /// ///////////// Private functions ///////////////

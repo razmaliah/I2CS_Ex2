@@ -255,7 +255,7 @@ public class Map implements Map2D, Serializable{
      */
     @Override
     public void drawCircle(Pixel2D center, double rad, int color) {
-        if (rad >= 0 || isInside(center)) {
+        if (rad >= 0 && isInside(center)) {
             int startW = Math.max(0, (int) (center.getX() - rad));
             int endW = Math.min(this.getWidth() - 1, (int) (center.getX() + rad + 1));
             int startH = Math.max(0, (int) (center.getY() - rad));
