@@ -116,6 +116,11 @@ public class Ex2_GUI {
         //Map2D map2 = loadMap(mapFile);
         //map2.setPixel(7,7,100);
         //saveMap(map2, "map2.txt");
+        Index2D center = new Index2D(20,15);
+        map.drawCircle(center, 6,4);
+        Index2D p11 = new Index2D(20,20);
+        Index2D p12 = new Index2D(29,29);
+        map.drawRect(p12,p11,5);
         drawMap(map);
 
     }

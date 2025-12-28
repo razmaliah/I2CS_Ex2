@@ -15,10 +15,6 @@ public class Map implements Map2D, Serializable{
 
     // edit this class below
     private int[][] _map;
-    private static long counter = 0;
-    public static long getCounter(){
-        return counter;
-    }
 	/**
 	 * Constructs a w*h 2D raster map with an init value v.
 	 * @param w - width of the map
@@ -85,7 +81,7 @@ public class Map implements Map2D, Serializable{
     }
 
     /**
-     * @return a deep copy of the underline matrix.
+     * @return a 2D array represent the map (deep copy).
      */
 	@Override
 	public int[][] getMap() {
@@ -103,8 +99,7 @@ public class Map implements Map2D, Serializable{
      */
 	@Override
 	public int getWidth() {
-        int ans = this._map.length;
-        return ans;
+        return this._map.length;
     }
 
     /**
@@ -112,29 +107,26 @@ public class Map implements Map2D, Serializable{
      */
 	@Override
 	public int getHeight() {
-        int ans = this._map[0].length;
-        return ans;
+        return this._map[0].length;
     }
     /**
      * @param x the x coordinate (first coordinate) - width
      * @param y the y coordinate (second coordinate) - height
-     * @return the [x][y] (int) value of the map[x][y].
+     * @return the value of the map[x][y].
      */
 	@Override
 	public int getPixel(int x, int y) {
-        int ans = this._map[x][y];
-        return ans;
+        return this._map[x][y];
     }
     /**
-     * @param p the x,y coordinate
-     * @return the [p.x][p.y] (int) value of the map.
+     * @param p Pixel 2D represent the x,y coordinate
+     * @return the value of the map[p.x][p.y].
      */
 	@Override
 	public int getPixel(Pixel2D p) {
         int x = p.getX();
         int y = p.getY();
-        int ans = this._map[x][y];
-        return ans;
+        return this._map[x][y];
 	}
 
     /**
@@ -153,12 +145,15 @@ public class Map implements Map2D, Serializable{
     }
 
     /**
-     * Set the [x][y] coordinate of the map to v.
+     * Set the [x][y] coordinate (Pixel2D) of the map to v.
      * @param p the coordinate in the map.
      * @param v the value that the entry at the coordinate [p.x][p.y] is set to.
      */
 	@Override
 	public void setPixel(Pixel2D p, int v) {
+        if(!isInside(p)){
+            throw new RuntimeException("Coordinate out of bounds");
+        }
         int x = p.getX();
         int y = p.getY();
         this._map[x][y] = v;
@@ -183,7 +178,7 @@ public class Map implements Map2D, Serializable{
     /**
      * This method returns true if and only if this Map has the same dimensions as p.
      * @param p - other map to compare to.
-     * @return true if and only if this Map has the same dimensions as p.
+     * @return true if this Map has the same dimensions as p.
      */
 
     @Override
@@ -214,7 +209,7 @@ public class Map implements Map2D, Serializable{
 
     /**
      * This method multiplies all the entries in this map by the given scalar.
-     * @param scalar
+     * @param scalar - the scalar to multiply this map by.
      */
     @Override
     public void mul(double scalar) {
@@ -251,10 +246,12 @@ public class Map implements Map2D, Serializable{
     }
 
     /**
-     * Draw a circle on this map.
+     * Draw a filled circle on this map.
+     * if rad <0 or center is outside the map do nothing.
+     * if part of the circle is outside the map only the inside part will be drawn.
      * @param center - the center of the circle "(x,y)".
      * @param rad - the radius of the circle.
-     * @param color - the (new) color to be used in the drawing.
+     * @param color the (new) color to be used in the drawing (int).
      */
     @Override
     public void drawCircle(Pixel2D center, double rad, int color) {
@@ -296,7 +293,7 @@ public class Map implements Map2D, Serializable{
                 }
                 int dx = right.getX() - left.getX(); // dx >=0
                 int dy = right.getY() - left.getY();
-                int steps = Math.max(Math.abs(dx), Math.abs(dy));
+                int steps = Math.max(dx, Math.abs(dy));
                 if (dx == 0) { // vertical line
                     for (int j = Math.min(left.getY(), right.getY()); j <= Math.max(left.getY(), right.getY()); j++) {
                         this.setPixel(left.getX(), j, color);
@@ -316,7 +313,7 @@ public class Map implements Map2D, Serializable{
     }
 
     /**
-     * Draw a rectangle on this map with corners p1 and p2.
+     * Draw a filled rectangle on this map with corners p1 and p2.
      * @param p1 the first corner of the rectangle "(x,y)".
      * @param p2 the second corner of the rectangle "(x,y)".
      * @param color - the (new) color to be used in the drawing.
@@ -338,7 +335,7 @@ public class Map implements Map2D, Serializable{
 
     /**
      * check if this map is equal to another map.
-     * @param ob the reference object with which to compare.
+     * @param ob the reference object with which to compare. if ob is not instance of Map2D return false.
      * @return true if the maps are equal (same dimensions and same values in all entries).
      */
     @Override
@@ -383,50 +380,28 @@ public class Map implements Map2D, Serializable{
         if(xy == null || !isInside(xy)){return ans;}
         int old_v = this.getPixel(xy);
         if(old_v == new_v){return ans;}
-        Pixel2D up = new Index2D(xy.getX(), xy.getY()-1);
-        Pixel2D down = new Index2D(xy.getX(), xy.getY()+1);
-        Pixel2D left = new Index2D(xy.getX()-1, xy.getY());
-        Pixel2D right = new Index2D(xy.getX()+1, xy.getY());
         this.setPixel(xy, new_v);
         ans++;
-        if(isInside(up) && this.getPixel(up) == old_v){
-            ans += fill(up, new_v, cyclic);
+        Pixel2D up = new Index2D(xy.getX(), xy.getY()+1);
+        Pixel2D down = new Index2D(xy.getX(), xy.getY()-1);
+        Pixel2D left = new Index2D(xy.getX()-1, xy.getY());
+        Pixel2D right = new Index2D(xy.getX()+1, xy.getY());
+        if (cyclic && !isInside(up)){
+            up = new Index2D(up.getX(),0);
         }
-        if(isInside(down) && this.getPixel(down) == old_v){
-            ans += fill(down, new_v, cyclic);
+        if (cyclic && !isInside(down)){
+            down = new Index2D(down.getX(),this.getHeight()-1);
         }
-        if(isInside(left) && this.getPixel(left) == old_v){
-            ans += fill(left, new_v, cyclic);
+        if(cyclic && !isInside(left)){
+            left = new Index2D(this.getWidth()-1, left.getY());
         }
-        if(isInside(right) && this.getPixel(right) == old_v){
-            ans += fill(right, new_v, cyclic);
+        if(cyclic && !isInside(right)){
+            right = new Index2D(0, right.getY());
         }
-        if(cyclic){
-            if(xy.getX() == 0){
-                Pixel2D cLeft = new Index2D(this.getWidth()-1, xy.getY());
-                if(this.getPixel(cLeft) == old_v){
-                    ans += fill(cLeft, new_v, cyclic);
-                }
-            }
-            if(xy.getX() == this.getWidth()-1){
-                Pixel2D cRight = new Index2D(0, xy.getY());
-                if(this.getPixel(cRight) == old_v){
-                    ans += fill(cRight, new_v, cyclic);
-                }
-            }
-            if(xy.getY() == 0){
-                Pixel2D cUp = new Index2D(xy.getX(), this.getHeight()-1);
-                if(this.getPixel(cUp) == old_v){
-                    ans += fill(cUp, new_v, cyclic);
-                }
-            }
-            if(xy.getY() == this.getHeight()-1){
-                Pixel2D cDown = new Index2D(xy.getX(), 0);
-                if(this.getPixel(cDown) == old_v){
-                    ans += fill(cDown, new_v, cyclic);
-                }
-            }
-        }
+        if(isInside(up) && this.getPixel(up) == old_v){ans += fill(up, new_v, cyclic);}
+        if(isInside(down) && this.getPixel(down) == old_v){ans += fill(down, new_v, cyclic);}
+        if(isInside(left) && this.getPixel(left) == old_v){ans += fill(left, new_v, cyclic);}
+        if(isInside(right) && this.getPixel(right) == old_v){ans += fill(right, new_v, cyclic);}
 		return ans;
 	}
 
@@ -434,6 +409,21 @@ public class Map implements Map2D, Serializable{
 	/**
 	 * BFS like shortest the computation based on iterative raster implementation of BFS, see:
 	 * https://en.wikipedia.org/wiki/Breadth-first_search
+     *
+     * compute the shortest valid path between two pixels (start, target) while avoiding obstacles.
+     * A path is an ordered set of pixels where each consecutive pixels in the path are neighbors in this map.
+     * Two pixels are neighbors in the map, iff they are a single pixel apart (up,down, left, right).
+     * If this map is cyclic:
+     * 1. the pixel to the left of (0,i) is (getWidth()-1,i).
+     * 2. the pixel to the right of (getWidth()-1,i) is (0,i).
+     * 3. the pixel above (j,getHeight()-1) is (j,0).
+     * 4. the pixel below (j,0) is (j,getHeight()-1).
+     * Where 0<=i<getWidth(), 0<=j<getWidth().
+     * @param start the start pixel for the path
+     * @param target the end pixel for the path
+     * @param obsColor the color represent the obstacle
+     * @param cyclic if true --> the map is assumed to be cyclic.
+     * @return Pixel array represent the shortest path, includes the start and target pixel.
 	 */
 	public Pixel2D[] shortestPath(Pixel2D start, Pixel2D target, int obsColor, boolean cyclic) {
 		Pixel2D[] ans = null;
@@ -446,9 +436,7 @@ public class Map implements Map2D, Serializable{
         Map tempMap = new Map(this.getMap());
         tempMap.resetMap(obsColor);
         tempMap.setPixel(start, 0);
-        //tempMap.printMap();
         tempMap.markSteps(start, target, cyclic);
-        //tempMap.printMap();
         int howManySteps = tempMap.getPixel(target);
         if (howManySteps < 0) {return null;} // no path found
         ans = new Pixel2D[howManySteps+1];      // from start to target is steps +1 pixels
@@ -496,10 +484,11 @@ public class Map implements Map2D, Serializable{
 
 
     /**
-     * Resets the map for the shortest path computation.
+     * Resets the map for the shortest path function.
      * all obstacle pixels (obstColor) are set to -2.
      * all other pixels are set to -1.
-     */
+     * @param obstColor the color represent obstacles
+     **/
     private void resetMap(int obstColor){
         for(int i=0;i<this.getWidth();i++){
             for(int j=0;j<this.getHeight();j++){
@@ -513,25 +502,24 @@ public class Map implements Map2D, Serializable{
         }
     }
 
-    private int markNieghbors(Pixel2D start, boolean cyclic){
+    /**
+     * this function mark the neighbors pixel to p (up, down, right, left) to be p value +1
+     * represent the number of step to the neighbors pixels (for example if p value is 3 it's 3 step away from the start.
+     * @param p the pixel to mark his neighbors
+     * @param cyclic if true --> the map is assumed to be cyclic.
+     * @return the number of changed pixels
+     */
+    private int markNeighbors(Pixel2D p, boolean cyclic){
         int howManyMarked =0;
-        Pixel2D up = new Index2D(start.getX(), start.getY()-1);
-        Pixel2D down = new Index2D(start.getX(), start.getY()+1);
-        Pixel2D left = new Index2D(start.getX()-1, start.getY());
-        Pixel2D right = new Index2D(start.getX()+1, start.getY());
-        if(cyclic && up.getY()<0){
-            up = new Index2D(start.getX(), this.getHeight()-1);
-        }
-        if(cyclic && down.getY()>=this.getHeight()) {
-            down = new Index2D(start.getX(), 0);
-        }
-        if(cyclic && left.getX()<0){
-            left = new Index2D(this.getWidth()-1, start.getY());
-        }
-        if(cyclic && right.getX()>=this.getWidth()){
-            right = new Index2D(0, start.getY());
-        }
-        int myValue = this.getPixel(start);
+        Pixel2D up = new Index2D(p.getX(), p.getY()-1);
+        Pixel2D down = new Index2D(p.getX(), p.getY()+1);
+        Pixel2D left = new Index2D(p.getX()-1, p.getY());
+        Pixel2D right = new Index2D(p.getX()+1, p.getY());
+        if(cyclic && up.getY()<0){ up = new Index2D(p.getX(), this.getHeight()-1);}
+        if(cyclic && down.getY()>=this.getHeight()) { down = new Index2D(p.getX(), 0);}
+        if(cyclic && left.getX()<0){ left = new Index2D(this.getWidth()-1, p.getY());}
+        if(cyclic && right.getX()>=this.getWidth()){ right = new Index2D(0, p.getY());}
+        int myValue = this.getPixel(p);
 
         if(isInside(up) && (this.getPixel(up) == -1 || this.getPixel(up) > myValue +1)){
             this.setPixel(up, myValue +1);
@@ -549,14 +537,19 @@ public class Map implements Map2D, Serializable{
             this.setPixel(right, myValue +1);
             howManyMarked++;
         }
-        counter += howManyMarked;
         return howManyMarked;
     }
 
+    /**
+     * this recursive function mark all valid color pixels (none obstacles) to be the lowest number of steps from start pixel
+     * @param start the start pixel to count steps from
+     * @param target the target pixel for the path
+     * @param cyclic if true --> the map is assumed to be cyclic.
+     */
     private void markSteps(Pixel2D start,Pixel2D target, boolean cyclic){
         if(!isInside(start) || !isInside(target)){return;}
         if(start.equals(target)){return;}
-        int howMany = markNieghbors(start, cyclic);
+        int howMany = markNeighbors(start, cyclic);
         if (howMany == 0) {
             return;
         }
@@ -565,18 +558,11 @@ public class Map implements Map2D, Serializable{
         Pixel2D left = new Index2D(start.getX()-1, start.getY());
         Pixel2D right = new Index2D(start.getX()+1, start.getY());
 
-        if(cyclic && up.getY()<0){
-            up = new Index2D(start.getX(), this.getHeight()-1);
-        }
-        if(cyclic && down.getY()>=this.getHeight()) {
-            down = new Index2D(start.getX(), 0);
-        }
-        if(cyclic && left.getX()<0){
-            left = new Index2D(this.getWidth()-1, start.getY());
-        }
-        if(cyclic && right.getX()>=this.getWidth()){
-            right = new Index2D(0, start.getY());
-        }
+        if(cyclic && up.getY()<0){up = new Index2D(start.getX(), this.getHeight()-1);}
+        if(cyclic && down.getY()>=this.getHeight()) {down = new Index2D(start.getX(), 0);}
+        if(cyclic && left.getX()<0){left = new Index2D(this.getWidth()-1, start.getY());}
+        if(cyclic && right.getX()>=this.getWidth()){right = new Index2D(0, start.getY());}
+
         if (isInside(up) && getPixel(up) == getPixel(start) +1) {
             markSteps(up, target, cyclic);
         }
@@ -590,6 +576,13 @@ public class Map implements Map2D, Serializable{
             markSteps(right, target, cyclic);
         }
     }
+
+    /**
+     * this function reverse the steps from target and return the neighbor pixel the has target value -1 (represent the steps)
+     * @param target pixel to reverse a step
+     * @param cyclic if true --> the map is assumed to be cyclic.
+     * @return the reversed step neighbor pixel
+     */
     private Pixel2D goBack(Pixel2D target, boolean cyclic){
         Pixel2D ans = null;
         int myValue = this.getPixel(target);
@@ -624,6 +617,10 @@ public class Map implements Map2D, Serializable{
         }
         return ans;
     }
+
+    /**
+     * print the map
+     */
     private void printMap(){
         for(int i=0; i< this.getWidth(); i++){
             for(int j=0; j< this.getHeight(); j++){
@@ -632,8 +629,8 @@ public class Map implements Map2D, Serializable{
             System.out.println();
         }
         System.out.println();
-        return;
     }
+
     static void main(String[] args) {
         Map map = new Map(100,100,0);
         Index2D p1 = new Index2D(8,3);
